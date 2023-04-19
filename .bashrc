@@ -39,7 +39,7 @@ export GUM_SPIN_SPINNER_FOREGROUND="11"
 export GUM_SPIN_SHOW_OUTPUT="1"
 
 git-commit() {
-    COMMIT_MESSAGE=$(gum write --placeholder "Commit message (CTRL+D to finish)")
+    COMMIT_MESSAGE=$(gum write --char-limit=0 --placeholder "Commit message (CTRL+D to finish)")
     gum confirm "Commit changes?" && git commit -m "$COMMIT_MESSAGE"
 }
 
