@@ -40,6 +40,7 @@ export GUM_SPIN_SHOW_OUTPUT="1"
 
 git-commit() {
     COMMIT_MESSAGE=$(gum write --char-limit=0 --placeholder "Commit message (CTRL+D to finish)")
+    printf "$COMMIT_MESSAGE" >/tmp/.commit_msg.bak
     gum confirm "Commit changes?" && git commit -m "$COMMIT_MESSAGE"
 }
 
