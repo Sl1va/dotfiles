@@ -38,12 +38,21 @@ export GUM_SPIN_TITLE=" "
 export GUM_SPIN_SPINNER_FOREGROUND="11"
 export GUM_SPIN_SHOW_OUTPUT="1"
 
+# End of gum config
+
 git-commit() {
     COMMIT_MESSAGE=$(gum write --char-limit=0 --placeholder "Commit message (CTRL+D to finish)")
     printf "$COMMIT_MESSAGE" >/tmp/.commit_msg.bak
     gum confirm "Commit changes?" && git commit -m "$COMMIT_MESSAGE"
 }
 
-# End of gum config
+git-log() {
+	FMT_HASH='%C(bold magenta)%h%C(reset)'
+	FMT_INFO='%C(cyan)<%ae> %ad%C(reset)'
+	FMT_BRANCH='%C(bold yellow)%d%C(reset)'
+	FMT_SUBJECT='%C(bold white)%s%C(reset)'
+	FMT_BODY='%w(0,4,4)%b'
+	git log --pretty=format:"$FMT_HASH $FMT_INFO $FMT_BRANCH%n%n    $FMT_SUBJECT%n%n$FMT_BODY" $@
+}
 
 # End of .bashrc custom config
