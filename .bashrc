@@ -1,5 +1,12 @@
 # Begining of .bashrc custom config
 
+warn() {
+    YELLOW='\033[1;33m'
+    NC='\033[0m'
+
+    echo -e "${YELLOW}WARNING: $@${NC}"
+}
+
 # Beginning of gum config (see https://github.com/charmbracelet/gum)
 
 # clear all previous configs
@@ -53,6 +60,11 @@ git-log() {
 	FMT_SUBJECT='%C(bold white)%s%C(reset)'
 	FMT_BODY='%w(0,4,4)%b'
 	git log --pretty=format:"$FMT_HASH $FMT_INFO $FMT_BRANCH%n%n    $FMT_SUBJECT%n%n$FMT_BODY" $@
+}
+
+ping() {
+	warn "ping was replaced by gping command"
+	gping --clear $@
 }
 
 # End of .bashrc custom config
