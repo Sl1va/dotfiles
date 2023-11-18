@@ -67,4 +67,34 @@ ping() {
 	gping --clear $@
 }
 
+note-add() {
+	local BORDER_COLOR="12"
+	local NOTE_PATH="$NOTE_PATH_GLOBAL"
+	[[ "$1" != ""  ]] && NOTE_PATH="$1"
+
+	if [[ "$NOTE_PATH" == ""  ]]; then
+		warn "Note path not specified neither in variable NOTE_PATH_GLOBAL not in command line argument"
+		return
+	fi
+
+	local NOTE_DATA=$(gum write --char-limit=0 \
+	                  --placeholder "Note message (CTRL+D to finish)" \
+		          --base.border-foreground="$BORDER_COLOR" \
+		          --cursor.foreground="$BORDER_COLOR")
+
+
+	printf "$NOTE_DATA" >/tmp/.note_data.bak
+
+
+	gum confirm "Commit note?"  \
+	            --selected.background="$BORDER_COLOR" \
+	            --prompt.border-foreground="$BORDER_COLOR" && \
+	{
+		local ts="$(date '+%a %b %d %T %Y')"
+		printf "\n**$ts**\n\n" >>$NOTE_PATH
+		printf "$NOTE_DATA\n" >>$NOTE_PATH
+		printf "\n---\n" >>$NOTE_PATH
+	}
+}
+
 # End of .bashrc custom config
