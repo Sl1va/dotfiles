@@ -62,10 +62,10 @@ git-log() {
 	git log --pretty=format:"$FMT_HASH $FMT_INFO $FMT_BRANCH%n%n    $FMT_SUBJECT%n%n$FMT_BODY" $@
 }
 
-ping() {
-	warn "ping was replaced by gping command"
-	gping --clear $@
-}
+#ping() {
+#	warn "ping was replaced by gping command"
+#	gping --clear $@
+#}
 
 note-add() {
 	local BORDER_COLOR="12"
