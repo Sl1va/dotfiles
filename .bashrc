@@ -10,7 +10,7 @@ warn() {
 # Beginning of gum config (see https://github.com/charmbracelet/gum)
 
 # clear all previous configs
-unset "${!GUM_@}"
+# unset "${!GUM_@}"
 
 export BOLD=0
 
