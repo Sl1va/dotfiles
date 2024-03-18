@@ -25,8 +25,8 @@ set -g @scroll-speed-num-lines-per-scroll 2
 bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "pbcopy"
 
 # Navigate tabs using Shift+Left/Right
-bind-key -n C-Right next-window
-bind-key -n C-Left previous-window
+bind-key -n S-Right next-window
+bind-key -n S-Left previous-window
 
 # Navigate panes using Alt+Arrows
 bind-key -n M-Right select-pane -R
