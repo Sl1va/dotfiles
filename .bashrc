@@ -119,8 +119,12 @@ _note_preview() {
 }
 
 markdown_note_preview() {
+	# Fix render area for preview
+	local current_cols=$(tput cols)
+	local new_cols=$((current_cols / 2 - 5))
+
 	local markdown="$(_note_preview $@)"
-	mdcat <<< $markdown
+	mdcat --columns $new_cols <<< $markdown
 }
 
 note-read() {
