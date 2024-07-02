@@ -1,5 +1,10 @@
 # Begining of .bashrc custom config
 
+# Dependencies:
+# gum: https://github.com/charmbracelet/gum
+# mdcat: https://github.com/swsnr/mdcat
+# fzf: https://github.com/junegunn/fzf
+
 warn() {
     YELLOW='\033[1;33m'
     NC='\033[0m'
@@ -7,7 +12,7 @@ warn() {
     echo -e "${YELLOW}WARNING: $@${NC}"
 }
 
-# Beginning of gum config (see https://github.com/charmbracelet/gum)
+# Beginning of gum config
 
 # clear all previous configs
 # unset "${!GUM_@}"
@@ -62,11 +67,6 @@ git-log() {
 	git log --pretty=format:"$FMT_HASH $FMT_INFO $FMT_BRANCH%n%n    $FMT_SUBJECT%n%n$FMT_BODY" $@
 }
 
-#ping() {
-#	warn "ping was replaced by gping command"
-#	gping --clear $@
-#}
-
 note-add() {
 	local BORDER_COLOR="12"
 	local NOTE_PATH="$NOTE_PATH_GLOBAL"
@@ -95,6 +95,47 @@ note-add() {
 		printf "$NOTE_DATA\n" >>$NOTE_PATH
 		printf "\n---\n" >>$NOTE_PATH
 	}
+}
+
+_note_preview() {
+	local NOTE_PATH="$1"
+	local title="**$2**"
+
+	local found="0"
+
+	while IFS= read -r line; do
+		if [ "$line" = "$title" ]; then
+			found="1"
+		fi
+
+		if [ "$found" = "1" ]; then
+			if [ "$line" = "---" ]; then
+				return
+			fi
+
+			echo "$line"
+		fi
+	done < $NOTE_PATH
+}
+
+markdown_note_preview() {
+	local markdown="$(_note_preview $@)"
+	mdcat <<< $markdown
+}
+
+note-read() {
+	local NOTE_PATH="$NOTE_PATH_GLOBAL"
+	[[ "$1" != ""  ]] && NOTE_PATH="$1"
+
+	if [[ "$NOTE_PATH" == ""  ]]; then
+		warn "Note path not specified neither in variable NOTE_PATH_GLOBAL not in command line argument"
+		return
+	fi
+
+	local regex="(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] [0-9]{4}"
+	local notes=$(grep -E $regex $NOTE_PATH | tail -r | sed 's/**//g')
+
+	fzf --preview="$(export -f _note_preview markdown_note_preview); markdown_note_preview $NOTE_PATH {}" <<< $notes
 }
 
 # End of .bashrc custom config
