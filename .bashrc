@@ -97,9 +97,21 @@ note-add() {
 	}
 }
 
+_todolist_preview() {
+	local NOTE_PATH="$1"
+
+	printf "**TODO**\n\n"
+	grep "TODO:" <$NOTE_PATH | awk '{print $0 "\n"}' | sed 's/^TODO:/- [ ] /g'
+}
+
 _note_preview() {
 	local NOTE_PATH="$1"
 	local title="**$2**"
+
+	if [ "$title" = "**TODO**" ]; then
+		_todolist_preview $NOTE_PATH
+		return
+	fi
 
 	local found="0"
 
@@ -139,7 +151,10 @@ note-read() {
 	local regex="(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] [0-9]{4}"
 	local notes=$(grep -E $regex $NOTE_PATH | tail -r | sed 's/**//g')
 
-	fzf --preview="$(export -f _note_preview markdown_note_preview); markdown_note_preview $NOTE_PATH {}" <<< $notes
+	# Add TODO section if it exists
+	grep -q TODO < "$NOTE_PATH" &&  notes="$(echo TODO; echo $notes)"
+
+	fzf --preview="$(export -f _todolist_preview _note_preview markdown_note_preview); markdown_note_preview $NOTE_PATH {}" <<< "$notes"
 }
 
 # End of .bashrc custom config
