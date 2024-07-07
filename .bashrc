@@ -82,8 +82,7 @@ note-add() {
 		          --base.border-foreground="$BORDER_COLOR" \
 		          --cursor.foreground="$BORDER_COLOR")
 
-
-	printf "$NOTE_DATA" >/tmp/.note_data.bak
+	echo -ne "$NOTE_DATA" >/tmp/.note_data.bak
 
 
 	gum confirm "Commit note?"  \
@@ -91,9 +90,9 @@ note-add() {
 	            --prompt.border-foreground="$BORDER_COLOR" && \
 	{
 		local ts="$(date '+%a %b %d %T %Y')"
-		printf "\n**$ts**\n\n" >>$NOTE_PATH
-		printf "$NOTE_DATA\n" >>$NOTE_PATH
-		printf "\n---\n" >>$NOTE_PATH
+		echo -ne "\n**$ts**\n\n" >>$NOTE_PATH
+		echo -ne "$NOTE_DATA\n" >>$NOTE_PATH
+		echo -ne "\n---\n" >>$NOTE_PATH
 	}
 }
 
