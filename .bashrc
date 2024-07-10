@@ -135,6 +135,10 @@ markdown_note_preview() {
 	local new_cols=$((current_cols / 2 - 5))
 
 	local markdown="$(_note_preview $@)"
+
+	# Do not display TODO lines
+	markdown=$(grep -v "^TODO:" <<< "$markdown")
+
 	mdcat --columns $new_cols <<< $markdown
 }
 
@@ -149,6 +153,16 @@ note-read() {
 
 	local regex="(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] [0-9]{4}"
 	local notes=$(grep -E $regex $NOTE_PATH | tail -r | sed 's/**//g')
+
+	# Do not display notes, which are empty
+	# (including notes which contain only TODO lines, as TODO lines are not displayed)
+	local nonempty_notes=""
+	while IFS= read -r note; do
+		if markdown_note_preview $NOTE_PATH $note | grep -v $note | grep -q '[^[:space:]]'; then
+			nonempty_notes+="$note"$'\n'
+		fi
+	done <<< "$notes"
+	notes=$(grep  '[^[:space:]]' <<<"$nonempty_notes")
 
 	# Add TODO section if it exists
 	grep -q TODO < "$NOTE_PATH" &&  notes="$(echo TODO; echo $notes)"
