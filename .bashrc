@@ -147,7 +147,7 @@ markdown_note_preview() {
 
 note-read() {
 	local NOTE_PATH="$NOTE_PATH_GLOBAL"
-	[[ "$1" != ""  ]] && NOTE_PATH="$1"
+	[[ "$1" != "" ]] && NOTE_PATH="$1"
 
 	if [[ "$NOTE_PATH" == ""  ]]; then
 		warn "Note path not specified neither in variable NOTE_PATH_GLOBAL not in command line argument"
@@ -165,12 +165,35 @@ note-read() {
 			nonempty_notes+="$note"$'\n'
 		fi
 	done <<< "$notes"
-	notes=$(grep  '[^[:space:]]' <<<"$nonempty_notes")
+	notes=$(grep '[^[:space:]]' <<<"$nonempty_notes")
 
 	# Add TODO section if it exists
 	grep -q TODO < "$NOTE_PATH" &&  notes="$(echo TODO; echo $notes)"
 
 	fzf --preview="$(export -f _todolist_preview _note_preview markdown_note_preview); markdown_note_preview $NOTE_PATH {}" <<< "$notes"
+}
+
+note-todo() {
+	local NOTE_PATH="$NOTE_PATH_GLOBAL"
+	[[ "$1" != "" ]] && NOTE_PATH="$1"
+
+	if [[ "$NOTE_PATH" == ""  ]]; then
+		warn "Note path not specified neither in variable NOTE_PATH_GLOBAL not in command line argument"
+		return
+	fi
+
+	todolist=$(grep "^TODO:" <$NOTE_PATH | sed 's/^TODO://g')
+	donelist=$(grep "^TODO (DONE):" <$NOTE_PATH | sed 's/^TODO (DONE)://g')
+
+	# echo "$todolist\n$donelist" | gum choose --no-limit --header "Modify todolist" --selected=$donelist
+	selected=""
+	while IFS= read -r task; do
+		# Fix comma delimeter for command
+		local selector=$(sed 's/,/\\,/g' <<<"$task")
+		selected+=",$selector"
+	done <<<"$donelist"
+
+	echo "$todolist\n$donelist" |  gum choose --no-limit --header "Modify todolist" --selected=$selected
 }
 
 # End of .bashrc custom config
