@@ -99,8 +99,11 @@ note-add() {
 _todolist_preview() {
 	local NOTE_PATH="$1"
 
-	printf "**TODO**\n\n"
-	grep "TODO:" <$NOTE_PATH | awk '{print $0 "\n"}' | sed 's/^TODO:/- [ ] /g'
+	grep -q "^TODO:" <$NOTE_PATH && printf "**TODO**\n\n"
+	grep "^TODO:" <$NOTE_PATH | awk '{print $0 "\n"}' | sed 's/^TODO:/- [ ] /g'
+
+	grep -q "^TODO (DONE):" <$NOTE_PATH && printf "\n\n**DONE**\n\n"
+	grep "^TODO (DONE):" <$NOTE_PATH | awk '{print $0 "\n"}' | sed 's/^TODO (DONE):/- [x] /g'
 }
 
 _note_preview() {
@@ -137,7 +140,7 @@ markdown_note_preview() {
 	local markdown="$(_note_preview $@)"
 
 	# Do not display TODO lines
-	markdown=$(grep -v "^TODO:" <<< "$markdown")
+	markdown=$(grep -vE "^TODO:|^TODO \(DONE\):" <<< "$markdown")
 
 	mdcat --columns $new_cols <<< $markdown
 }
