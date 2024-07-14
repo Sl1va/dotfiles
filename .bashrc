@@ -182,10 +182,12 @@ note-todo() {
 		return
 	fi
 
-	todolist=$(grep "^TODO:" <$NOTE_PATH | sed 's/^TODO://g')
-	donelist=$(grep "^TODO (DONE):" <$NOTE_PATH | sed 's/^TODO (DONE)://g')
+	local todolist=$(grep "^TODO:" <$NOTE_PATH | sed 's/^TODO://g')
+	local donelist=$(grep "^TODO (DONE):" <$NOTE_PATH | sed 's/^TODO (DONE)://g')
 
-	# echo "$todolist\n$donelist" | gum choose --no-limit --header "Modify todolist" --selected=$donelist
+	todolist=$(grep '[^[:space:]]' <<<"$todolist")
+	donelist=$(grep '[^[:space:]]' <<<"$donelist")
+
 	selected=""
 	while IFS= read -r task; do
 		# Fix comma delimeter for command
@@ -193,7 +195,34 @@ note-todo() {
 		selected+=",$selector"
 	done <<<"$donelist"
 
-	echo "$todolist\n$donelist" |  gum choose --no-limit --header "Modify todolist" --selected=$selected
+	newdonelist=$(echo -n "$todolist\n$donelist" |  gum choose --no-limit --header "Modify todolist" --selected=$selected)
+
+	# Create temporal file and first modify it
+	local tempfile=$(mktemp)
+	cp $NOTE_PATH $tempfile
+
+	# Mark all todos as undone
+	sed -i "" 's/^TODO (DONE):/TODO:/g' $tempfile || {
+		echo "Failed to update temporal file: $tempfile"
+		return
+	}
+
+	# Mark done tasks
+	while IFS= read -r donetask; do
+		if [[ -z "$donetask" ]]; then
+			continue
+		fi
+
+		sed -i "" "/$donetask/c\\
+TODO (DONE):$donetask
+" $tempfile
+
+	done <<<"$newdonelist" || {
+		echo "Failed to update done task in $tempfile"
+		return
+	}
+
+	cp $tempfile $NOTE_PATH
 }
 
 # End of .bashrc custom config
