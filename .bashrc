@@ -195,7 +195,15 @@ note-todo() {
 		selected+=",$selector"
 	done <<<"$donelist"
 
-	newdonelist=$(echo -n "$todolist\n$donelist" |  gum choose --no-limit --header "Modify todolist" --selected=$selected)
+	local list="$todolist"
+	if [[ ! -z "$donelist" ]]; then
+		if [[ ! -z "$list" ]]; then
+			list+="\n"
+		fi
+		list+="$donelist"
+	fi
+
+	local newdonelist=$(echo -n "$list" |  gum choose --no-limit --header "Modify todolist" --selected=$selected)
 
 	# Create temporal file and first modify it
 	local tempfile=$(mktemp)
