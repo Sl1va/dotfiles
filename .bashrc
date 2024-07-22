@@ -233,4 +233,7 @@ TODO (DONE):$donetask
 	cp $tempfile $NOTE_PATH
 }
 
+# Do not search in .git directory via grep
+alias grep="grep --exclude-dir .git"
+
 # End of .bashrc custom config
