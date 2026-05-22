@@ -52,6 +52,9 @@ bind-key -n M-= new-window
 bind-key -n M-v split-window -v
 bind-key -n M-h split-window -h
 
+# Display pane names by default
+set-option -g pane-border-status top
+
 # Toggle displaying pane names on Alt+n
 bind-key -n M-n run-shell ' \
     if [ "$(tmux show-option -gv pane-border-status)" = "off" ]; then \
