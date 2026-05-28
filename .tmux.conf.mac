@@ -65,4 +65,11 @@ bind-key -n M-n run-shell ' \
 
 # Promt for setting pane name Alt+Shift+n
 bind-key -n M-N command-prompt -p "Enter pane name:" "select-pane -T '%%'"
+
+# Create new session on Alt+Shift+s
+bind-key -n M-S command-prompt -p "New session name:" "new-session -s '%%'"
+
+# Choose session
+bind-key -n M-s choose-tree -s -Z
+
 run '~/.tmux/plugins/tpm/tpm'
