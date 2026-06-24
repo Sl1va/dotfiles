@@ -72,4 +72,19 @@ bind-key -n M-S command-prompt -p "New session name:" "new-session -s '%%'"
 # Choose session
 bind-key -n M-s choose-tree -s -Z
 
+# For nested tmux entities (e.g., via ssh), toggle freeze/unfreeze external (local) tmux on Alt+i
+bind -T root M-i \
+    set prefix None \;\
+    set key-table remote \;\
+    set status-left "[REMOTE] " \;\
+    set status-style "fg=color245,bg=color238" \;\
+    refresh-client -S
+
+bind -T remote M-i \
+    set -u prefix \;\
+    set -u key-table \;\
+    set -u status-left \;\
+    set -u status-style \;\
+    refresh-client -S
+
 run '~/.tmux/plugins/tpm/tpm'
