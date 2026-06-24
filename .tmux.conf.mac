@@ -12,6 +12,9 @@ set -g @plugin 'nhdaly/tmux-better-mouse-mode'
 #set -g @tmux_power_right_arrow_icon ' '
 set -g @tmux_power_theme 'violet'
 
+# Make history limit greater
+set -g history-limit 50000
+
 # Index windows and panes staring from 1, not 0
 set -g base-index 1
 set -g pane-base-index 1
