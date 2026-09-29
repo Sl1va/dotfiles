@@ -37,9 +37,9 @@ bind-key -n M-Left select-pane -L
 bind-key -n M-Up select-pane -U
 bind-key -n M-Down select-pane -D
 
-# Swap windows using Ctrl+Meta+Square Brackets
-bind-key -n C-M-] swap-window -t +1 \; next-window
-bind-key -n C-M-[ swap-window -t -1 \; previous-window
+# Swap windows using Alt+Shift+Arrows
+bind-key -n M-S-Right swap-window -t +1 \; next-window
+bind-key -n M-S-Left swap-window -t -1 \; previous-window
 
 # Zoom/unzoom current pane using Alt+z
 bind-key -n M-z resize-pane -Z
