@@ -72,8 +72,11 @@ bind-key -n M-N command-prompt -p "Enter pane name:" "select-pane -T '%%'"
 # Create new session on Alt+Shift+s
 bind-key -n M-S command-prompt -p "New session name:" "new-session -s '%%'"
 
-# Choose session
+# Choose session in Alt+s
 bind-key -n M-s choose-tree -s -Z
+
+# Switch to last used tab on Alt+Tab
+bind-key -n M-Tab last-window
 
 # For nested tmux entities (e.g., via ssh), toggle freeze/unfreeze external (local) tmux on Alt+i
 bind -T root M-i \
